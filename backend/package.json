@@ -1,0 +1,38 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "main": "src/server.js",
+    "scripts": {
+        "format": "prettier --write \"**/*.+(js|json)\"",
+        "lint": "eslint src",
+        "start:dev": "set NODE_ENV=development && nodemon -L src/server.js",
+        "start": "set NODE_ENV=production && node src/server.js"
+    },
+    "lint-staged": {
+        "*.js": "eslint --quiet --fix && prettier --write"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "eslint": "^8.45.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-jest": "^26.2.2",
+        "lint-staged": "^13.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "nodemon": "^3.0.1",
+        "prettier": "^3.0.0"
+      },
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "connect-mongo": "^5.0.0",
+        "cors": "^2.8.5",
+        "express": "^4.18.1",
+        "express-session": "^1.17.3",
+        "mongodb": "^5.7.0",
+        "mongoose": "^7.4.0",
+        "multer": "^1.4.5-lts.1",
+        "socket.io": "^4.5.1",
+        "socket.io-client": "^4.5.2"
+    }
+}

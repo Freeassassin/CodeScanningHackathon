@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, React, createRef } from "react";
+import { useMemo, useRef, useState, createRef } from "react";
 import "./HomePage.css";
 import TinderCard from "react-tinder-card";
 
@@ -51,11 +51,7 @@ function HomePage() {
 
   const outOfFrame = (name, idx) => {
     console.log(`${name} (${idx}) left the screen!`, currentIndexRef.current);
-    // handle the case in which go back is pressed before card goes outOfFrame
     currentIndexRef.current >= idx && childRefs[idx].current.restoreCard();
-    // TODO: when quickly swipe and restore multiple times the same card,
-    // it happens multiple outOfFrame events are queued and the card disappear
-    // during latest swipes. Only the last outOfFrame event should be considered valid
   };
 
   const swipe = async (dir) => {
@@ -63,6 +59,7 @@ function HomePage() {
       await childRefs[currentIndex].current.swipe(dir); // Swipe the card!
     }
   };
+  
 
   return (
     <div className="home-container">
@@ -85,7 +82,7 @@ function HomePage() {
       </div>
       <div className="card-buttons-container">
         <button onClick={() => swipe("left")}>nope</button>
-        <button onClick={() => {}}>False Positive</button>
+        <button>False Positive</button>
         <button onClick={() => swipe("right")}>dope</button>
       </div>
     </div>
