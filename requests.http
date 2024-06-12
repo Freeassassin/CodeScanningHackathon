@@ -1,0 +1,12 @@
+# POST http://localhost:5001/user HTTP/1.1
+# Content-Type: application/json
+
+# {
+#     "user": {
+#         "username": "test",
+#         "score": 500
+#     }
+# }
+
+GET http://localhost:5001/leaderboard HTTP/1.1
+Content-Type: application/json
