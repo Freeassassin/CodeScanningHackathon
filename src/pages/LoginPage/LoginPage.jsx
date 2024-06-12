@@ -1,7 +1,13 @@
 import React from 'react';
 import './LoginPage.css';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function LoginPage() {
+
+  const navigate = useNavigate();
+
   class LoginForm extends React.Component{
     constructor(){
       super();
@@ -19,24 +25,25 @@ function LoginPage() {
       let input = this.state.input;
       //identify the input field based on its name attribute
       input[event.target.name] = event.target.value;
-      this.setState({input})
+      this.setState({input});
     }
     //called when the form is submitted
-    handleSubmit(event){
+    async handleSubmit(event){
       //prevents the default form submission behavior
       event.preventDefault();
+      // console.log("submitted but not validated");
       //calls the validate function to check the validity of the form inputs and if it is valid the form is submitted
       if (this.validate()){
-        console.log(this.state);
+        // console.log(this.state);
 
         let input = {};
         input["username"] = "";
-        input["email"] = "";
         input["password"] = "";
-        input["confirm_password"] = "";
         this.setState({input : input});
 
-        alert("Form is submitted");
+        console.log("submitted. username is ", this.state.input["username"]);
+        // redirect
+        navigate("/");
       }
     }
 
