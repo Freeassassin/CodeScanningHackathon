@@ -121,7 +121,7 @@ app.post("/upload", async (req, res) => {
   await IssueModel.bulkWrite(writes).then((res) => {
     console.log(res.insertedCount, res.modifiedCount, res.deletedCount);
   });
-  res.status(200);
+  res.status(200).send({ message: "all good" });
 });
 
 app.post("/login", async (req, res) => {

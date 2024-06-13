@@ -21,11 +21,17 @@ function LeaderboardPage() {
 
   return (
     <>
-      <h1>Leaderboard</h1>
-      <div>
+      <div className="leaderboard-container">
+        <h2>Leaderboard</h2>
         {users.map((user, index) => (
           <div className="user" key={user._id}>
-            <p>{index + 1}</p>
+            <p
+              style={{
+                width: "3ch",
+              }}
+            >
+              {index + 1}
+            </p>
             <p>{user.username}</p>
             <p>{user.score}</p>
           </div>

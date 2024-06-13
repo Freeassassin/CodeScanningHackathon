@@ -60,6 +60,7 @@ function HomePage() {
 
   return (
     <div className="home-container">
+      <h2 className="title">Bug Pick Up</h2>
       <div className="cards-container">
         <div className="cards">
           <TinderCard preventSwipe={["left", "right", "up", "down"]}>

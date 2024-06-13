@@ -13,7 +13,6 @@ import "./index.css";
 const HeaderLayout = () => {
   const [rerender, setRerender] = useState(false);
   const loggedIn = localStorage.getItem("username");
-  console.log(loggedIn);
   return loggedIn !== null ? (
     <>
       <header>
