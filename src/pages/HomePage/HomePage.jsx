@@ -61,6 +61,17 @@ function HomePage() {
   return (
     <div className="home-container">
       <h2 className="title">Bug Pick Up</h2>
+      <button
+        onClick={() => {
+          window.localStorage.clear();
+          window.location.reload();
+        }}
+        style={{
+          margin: "0 2vh",
+        }}
+      >
+        Logout
+      </button>
       <div className="cards-container">
         <div className="cards">
           <TinderCard preventSwipe={["left", "right", "up", "down"]}>

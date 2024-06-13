@@ -14,11 +14,6 @@ services:
             condition: service_started
         environment:
             - ME_CONFIG_MONGODB_URL=mongodb://devroot:devroot@mongo:27017/project?authSource=admin
-            # - ME_CONFIG_MONGODB_AUTH_DATABASE=${MONGODB_DBNAME}
-            # - ME_CONFIG_MONGODB_AUTH_USERNAME=devroot
-            # - ME_CONFIG_MONGODB_AUTH_PASSWORD=devroot
-            # - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXPRESS_LOGIN}
-            # - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXPRESS_PASSWORD}
         ports:
           - "8888:8081"
         restart: unless-stopped
@@ -34,10 +29,17 @@ services:
         - CLIENT_BASE_URL=$CLIENT_BASE_URL
         - API_BASE_URL=$API_BASE_URL
         - USER_SESSION_SECRET=$USER_SESSION_SECRET
-        - CLIENT_ID=$CLIENT_ID
-        - CLIENT_SECRET=$CLIENT_SECRET
       ports:
         - "5001:5001"
       volumes:
         - ./backend/src:/app/src
         - ./backend/uploads:/app/uploads
+    frontend:
+      build: ./
+      container_name: frontend
+      depends_on:
+        - backend
+      volumes:
+        - ./:/app/
+      ports:
+        - "5173:5173"    

@@ -18,13 +18,33 @@ function AdminPage() {
     <div className="admin-container">
       <h2>Upload</h2>
       <input type="file" onChange={uploadFile} />
+      <button
+        onClick={() => {
+          axios
+            .post("http://localhost:5001/upload", {
+              results: files,
+            })
+            .then((response) => {
+              console.log(response.status);
+              if (response.status == 200) setColor("green");
+            });
+        }}
+        style={{
+          margin: "2vh 0",
+          backgroundColor: color,
+        }}
+        disabled={color ? true : false}
+      >
+        {color ? "Uploaded Successfully" : "Upload"}
+      </button>
       <h3
         style={{
-          marginTop: "2vh",
+          margin: "2vh 0",
         }}
       >
         Bugs Found:
       </h3>
+
       {files.length > 0
         ? files.map((result, index) => (
             <div className="issue" key={index}>
@@ -51,25 +71,6 @@ function AdminPage() {
             </div>
           ))
         : null}
-      <button
-        onClick={() => {
-          axios
-            .post("http://localhost:5001/upload", {
-              results: files,
-            })
-            .then((response) => {
-              console.log(response.status);
-              if (response.status == 200) setColor("green");
-            });
-        }}
-        style={{
-          marginTop: "2vh",
-          backgroundColor: color,
-        }}
-        disabled={color ? true : false}
-      >
-        {color ? "Uploaded Successfully" : "Upload"}
-      </button>
     </div>
   );
 }

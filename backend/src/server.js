@@ -15,6 +15,7 @@ const corsOptions = {
     process.env.CLIENT_BASE_URL,
     process.env.API_BASE_URL,
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:4173",
   ],
 };
 app.use(cors(corsOptions));
