@@ -73,6 +73,11 @@ const IssueSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  done: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 const IssueModel = mongoose.model("Issue", IssueSchema);

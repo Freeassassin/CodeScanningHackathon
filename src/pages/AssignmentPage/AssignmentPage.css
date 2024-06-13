@@ -1,0 +1,44 @@
+.assignment-container{
+    display: flex;
+    flex-direction: column;
+
+}
+.assignment-container h2 {
+    margin: 2vh;
+    font-size: xx-large;
+    max-width: 100vw;
+}
+
+.assignment-table{
+    margin: 2vh;
+    overflow-x: 'scroll';
+
+}
+
+.assignment-table table{
+    display: block;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    overflow-x: auto;
+}
+
+.assignment-table thead{
+    font-size: large;
+    font-weight: bolder;
+}
+.assignment-table button{
+    background-color: green;
+}
+
+.assignment-table table tbody tr{
+    border-bottom: 10px #ffff;
+}
+
+.assignment-table th{
+    padding: 2vh  2.5vw;
+}
+
+.assignment-table  td{
+    padding: 2vh  2.5vw;
+    min-width: 35vw;
+}

@@ -95,11 +95,14 @@ app.post("/upload", async (req, res) => {
       )
     ) {
       if (issue.assigned !== "no") {
+        let score = 0;
+        if (issue.done === true) score = 250;
+        else score = 1000 + 500 * issue.persistent + 250;
         await UserModel.findOneAndUpdate(
           { username: issue.assigned },
           {
             $inc: {
-              score: 1000,
+              score,
             },
           }
         );
@@ -157,22 +160,39 @@ app.post("/assign", async (req, res) => {
     { assigned: req.body.username }
   );
 
+  res.status(200).send({ issue });
+});
+
+app.post("/done", async (req, res) => {
+  console.log(req.body);
+  const issue = await IssueModel.findOneAndUpdate(
+    { _id: req.body.id },
+    { done: true }
+  );
+
   const user = await UserModel.findOneAndUpdate(
     {
       username: req.body.username,
     },
     {
       $inc: {
-        score: 250,
+        score: 1000 + 500 * issue.persistent,
       },
     }
   );
-  res.status(200).send({ issue, user });
+  const issues = await IssueModel.find({
+    assigned: req.body.username,
+    done: false,
+  });
+  res.status(200).send({ issues, user });
 });
 
-app.get("/assigned", async (req, res) => {
+app.post("/assigned", async (req, res) => {
   console.log(req.body);
-  const issues = await IssueModel.find({ assigned: req.body.username });
+  const issues = await IssueModel.find({
+    assigned: req.body.username,
+    done: false,
+  });
   res.status(200).send({ issues });
 });
 

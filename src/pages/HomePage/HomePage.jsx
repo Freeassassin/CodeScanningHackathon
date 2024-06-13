@@ -81,14 +81,28 @@ function HomePage() {
                 <div className="card-file-path">
                   {issue.location.artifactLocation.uri
                     .split("/")
-                    .map((item, index) => (
+                    .map((item, index, orignal) => (
                       <h4 key={index}>
-                        {(index > 0 ? "|" : "") + "__".repeat(index) + item}
+                        {(index > 0 ? "|" : "") +
+                          "_".repeat(index) +
+                          item +
+                          (index === orignal.length - 1
+                            ? ":" +
+                              issue.location.region.startLine +
+                              ":" +
+                              issue.location.region.startColumn
+                            : "")}
                       </h4>
                     ))}
                 </div>
                 <h3>{"Details:"}</h3>
                 <h5>{issue.message}</h5>
+                <h3>
+                  {"Possible Points: " + (1000 + 500 * issue.persistent + 250)}
+                </h3>
+                <h5>{"+1000 for finishing"}</h5>
+                <h5>{"+" + 500 * issue.persistent + " persistent bonus"}</h5>
+                <h5>{"+250 when fix validated by next scan"}</h5>
               </div>
             </TinderCard>
           ))}
@@ -96,8 +110,7 @@ function HomePage() {
       </div>
       <div className="card-buttons-container">
         <button onClick={() => swipe("left")}>Nope</button>
-        {/* TODO: hood this upto the API */}
-        <button>False Positive</button>
+        <button onClick={() => swipe("up")}>False Positive</button>
         <button onClick={() => swipe("right")}>Dope</button>
       </div>
     </div>
