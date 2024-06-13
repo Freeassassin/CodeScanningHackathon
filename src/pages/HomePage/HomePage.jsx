@@ -85,6 +85,7 @@ function HomePage() {
       </div>
       <div className="card-buttons-container">
         <button onClick={() => swipe("left")}>Nope</button>
+        {/* TODO: hood this upto the API */}
         <button>False Positive</button>
         <button onClick={() => swipe("right")}>Dope</button>
       </div>
