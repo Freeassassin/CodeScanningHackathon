@@ -18,12 +18,13 @@
         "eslint": "^8.45.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-jest": "^26.2.2",
-        "lint-staged": "^13.0.0",
         "eslint-plugin-prettier": "^5.0.0",
+        "lint-staged": "^13.0.0",
         "nodemon": "^3.0.1",
         "prettier": "^3.0.0"
-      },
+    },
     "dependencies": {
+        "axios": "^1.7.2",
         "bcrypt": "^5.1.1",
         "connect-mongo": "^5.0.0",
         "cors": "^2.8.5",

@@ -5,10 +5,8 @@ const MongoStore = require("connect-mongo");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const multer = require("multer");
 const IssueModel = require("./issueModel");
 const UserModel = require("./userModel");
-const { userInfo } = require("os");
 
 const app = express();
 
@@ -41,19 +39,54 @@ app.use(
 );
 
 // routes
-var storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./uploads");
-  },
-  filename: function (req, file, callback) {
-    callback(null, file.originalname);
-  },
-});
 
-// const upload = multer({ storage });
-var upload = multer({ storage: storage });
-app.post("/upload", upload.single("file"), (req, res) => {
-  console.log(req.file);
+app.post("/upload", async (req, res) => {
+  let writes = [];
+  for (const result of req.body.results) {
+    const persistent = await IssueModel.findOne({
+      primaryLocationLineHash:
+        result.partialFingerprints.primaryLocationLineHash,
+      primaryLocationStartColumnFingerprint:
+        result.partialFingerprints.primaryLocationStartColumnFingerprint,
+    });
+    console.log(persistent);
+    if (persistent) {
+      writes.push({
+        updateOne: {
+          filter: {
+            primaryLocationLineHash:
+              result.partialFingerprints.primaryLocationLineHash,
+            primaryLocationStartColumnFingerprint:
+              result.partialFingerprints.primaryLocationStartColumnFingerprint,
+          },
+          update: {
+            $inc: {
+              persistent: 1,
+            },
+          },
+        },
+      });
+    } else {
+      writes.push({
+        insertOne: {
+          document: {
+            ruleId: result.ruleId,
+            ruleIndex: result.ruleIndex,
+            message: result.message.text,
+            location: result.locations[0].physicalLocation,
+            primaryLocationLineHash:
+              result.partialFingerprints.primaryLocationLineHash,
+            primaryLocationStartColumnFingerprint:
+              result.partialFingerprints.primaryLocationStartColumnFingerprint,
+          },
+        },
+      });
+    }
+  }
+  await IssueModel.bulkWrite(writes).then((res) => {
+    console.log(res.insertedCount, res.modifiedCount, res.deletedCount);
+  });
+  // TODO: check which issues didnt persist and delete them/ assign points
   res.status(200);
 });
 
@@ -69,10 +102,11 @@ app.get("/leaderboard", async (req, res) => {
 });
 
 app.get("/issues", async (req, res) => {
-  const issues = await IssueModel.find({});
+  const issues = await IssueModel.find({ assigned: "no" });
 
   res.status(200).send({ issues });
 });
+
 
 app.get("*", (req, res) => {
   res.status(200).send("hello");

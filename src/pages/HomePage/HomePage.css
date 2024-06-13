@@ -22,14 +22,15 @@
 
 .card{
     position: absolute;
-    
     display: flex;
-    justify-content: center;
-    align-items: center;
-    
+    border-radius: 15px;
+    padding: 1.5vh 5vw;
     height: 70vh;
     width: 100%;
     background-color: black;
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: flex-start;
 }
 
 .card-buttons-container{
