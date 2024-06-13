@@ -9,7 +9,6 @@ const IssueModel = require("./issueModel");
 const UserModel = require("./userModel");
 
 const app = express();
-
 const corsOptions = {
   credentials: true,
   origin: [
@@ -49,7 +48,6 @@ app.post("/upload", async (req, res) => {
       primaryLocationStartColumnFingerprint:
         result.partialFingerprints.primaryLocationStartColumnFingerprint,
     });
-    console.log(persistent);
     if (persistent) {
       writes.push({
         updateOne: {
@@ -83,17 +81,99 @@ app.post("/upload", async (req, res) => {
       });
     }
   }
+
+  const issues = await IssueModel.find({});
+
+  for (const issue of issues) {
+    if (
+      !req.body.results.some(
+        (result) =>
+          issue.primaryLocationLineHash ==
+            result.partialFingerprints.primaryLocationLineHash &&
+          issue.primaryLocationStartColumnFingerprint ==
+            result.partialFingerprints.primaryLocationStartColumnFingerprint
+      )
+    ) {
+      if (issue.assigned !== "no") {
+        await UserModel.findOneAndUpdate(
+          { username: issue.assigned },
+          {
+            $inc: {
+              score: 1000,
+            },
+          }
+        );
+      }
+      writes.push({
+        deleteOne: {
+          filter: {
+            primaryLocationLineHash: issue.primaryLocationLineHash,
+            primaryLocationStartColumnFingerprint:
+              issue.primaryLocationStartColumnFingerprint,
+          },
+        },
+      });
+    }
+  }
   await IssueModel.bulkWrite(writes).then((res) => {
     console.log(res.insertedCount, res.modifiedCount, res.deletedCount);
   });
-  // TODO: check which issues didnt persist and delete them/ assign points
   res.status(200);
 });
 
-app.post("/user", async (req, res) => {
+app.post("/login", async (req, res) => {
   console.log(req.body);
-  await UserModel.create(req.body.user);
-  res.status(200);
+  const existingUser = await UserModel.findOne({ username: req.body.username });
+  if (!existingUser) {
+    const user = await UserModel.create(req.body);
+    return res.status(200).send({ user });
+  }
+  return res.status(200).send({ user: existingUser });
+});
+
+app.post("/issue", async (req, res) => {
+  console.log(req.body);
+  const issue = await IssueModel.findOneAndUpdate(
+    { _id: req.body.id },
+    { falsePositive: true }
+  );
+  const user = await UserModel.findOneAndUpdate(
+    {
+      username: req.body.username,
+    },
+    {
+      $inc: {
+        score: 500,
+      },
+    }
+  );
+  res.status(200).send({ issue, user });
+});
+
+app.post("/assign", async (req, res) => {
+  console.log(req.body);
+  const issue = await IssueModel.findOneAndUpdate(
+    { _id: req.body.id },
+    { assigned: req.body.username }
+  );
+
+  const user = await UserModel.findOneAndUpdate(
+    {
+      username: req.body.username,
+    },
+    {
+      $inc: {
+        score: 250,
+      },
+    }
+  );
+  res.status(200).send({ issue, user });
+});
+
+app.get("/assigned", async (req, res) => {
+  console.log(req.body);
+  const issues = await IssueModel.find({ assigned: req.body.username });
+  res.status(200).send({ issues });
 });
 
 app.get("/leaderboard", async (req, res) => {
@@ -102,11 +182,13 @@ app.get("/leaderboard", async (req, res) => {
 });
 
 app.get("/issues", async (req, res) => {
-  const issues = await IssueModel.find({ assigned: "no" });
+  const issues = await IssueModel.find({
+    assigned: "no",
+    falsePositive: false,
+  });
 
   res.status(200).send({ issues });
 });
-
 
 app.get("*", (req, res) => {
   res.status(200).send("hello");

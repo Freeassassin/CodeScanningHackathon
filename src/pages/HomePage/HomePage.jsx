@@ -32,8 +32,19 @@ function HomePage() {
   const canSwipe = currentIndex >= 0;
 
   // set last direction and decrease current index
-  const swiped = (direction, nameToDelete, index) => {
+  const swiped = async (direction, issueID, index) => {
     updateCurrentIndex(index - 1);
+    if (direction === "right") {
+      await axios.post("http://localhost:5001/assign", {
+        id: issueID,
+        username: localStorage.getItem("username"),
+      });
+    } else if (direction === "up") {
+      await axios.post("http://localhost:5001/issue", {
+        id: issueID,
+        username: localStorage.getItem("username"),
+      });
+    }
   };
 
   const outOfFrame = (name, idx) => {
@@ -60,7 +71,7 @@ function HomePage() {
             <TinderCard
               ref={childRefs[index]}
               key={issue._id}
-              onSwipe={(dir) => swiped(dir, issue.ruleId, index)}
+              onSwipe={(dir) => swiped(dir, issue._id, index)}
               onCardLeftScreen={() => outOfFrame(issue.ruleId, index)}
             >
               <div className="card">

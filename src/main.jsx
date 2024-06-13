@@ -1,8 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import HomePage from './pages/HomePage/HomePage';
+import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import AssignmentPage from "./pages/AssignmentPage/AssignmentPage";
@@ -10,14 +10,21 @@ import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage";
 import Navbar from "./components/Navbar/Navbar";
 
 import "./index.css";
-const HeaderLayout = () => (
-  <>
-    <header>
-      <Navbar />
-    </header>
-    <Outlet />
-  </>
-);
+const HeaderLayout = () => {
+  const [rerender, setRerender] = useState(false);
+  const loggedIn = localStorage.getItem("username");
+  console.log(loggedIn);
+  return loggedIn !== null ? (
+    <>
+      <header>
+        <Navbar />
+      </header>
+      <Outlet />
+    </>
+  ) : (
+    <LoginPage setRerender={setRerender} />
+  );
+};
 const router = createBrowserRouter([
   {
     element: <HeaderLayout />,
@@ -100,25 +107,25 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/login",
-    element: (
-      <div
-        className="content-container"
-        style={{
-          position: "absolute",
-          right: 0,
-          left: 0,
-          bottom: 0,
-          top: 0,
-        }}
-      >
-        <div style={{ minHeight: "100vh" }}>
-          <LoginPage />
-        </div>
-      </div>
-    ),
-  },
+  // {
+  //   path: "/login",
+  //   element: (
+  //     <div
+  //       className="content-container"
+  //       style={{
+  //         position: "absolute",
+  //         right: 0,
+  //         left: 0,
+  //         bottom: 0,
+  //         top: 0,
+  //       }}
+  //     >
+  //       <div style={{ minHeight: "100vh" }}>
+  //         <LoginPage />
+  //       </div>
+  //     </div>
+  //   ),
+  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
